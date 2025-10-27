@@ -1,23 +1,24 @@
-<?php 
+<?php
+include 'connect.php';
 
-if(isset($_GET['id'])){
-    $id=$_GET['id'];
-    include("connect.php");
+$id = $_GET['id'] ?? 0;
 
-    $sql="DELETE from books  WHERE id=$id";
-
-    if(mysqli_query($conn,$sql)){
-        // echo "deleted";
-
-        session_start();
-        $_SESSION["delete"]="book deleted successfully";
-
-        header("location:index.php");
-
+if ($id > 0) {
+    $sql = "DELETE FROM books WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $id);
+    
+    if ($stmt->execute()) {
+        header("Location: index.php?message=Book deleted successfully");
+        exit();
+    } else {
+        header("Location: index.php?error=Error deleting book");
+        exit();
     }
-    else
-        echo "ERORR IN DLT ";
+} else {
+    header("Location: index.php");
+    exit();
 }
 
-
+$conn->close();
 ?>

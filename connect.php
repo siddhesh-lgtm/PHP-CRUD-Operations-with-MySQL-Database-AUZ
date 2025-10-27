@@ -1,20 +1,15 @@
-<?php 
+<?php
+$hostname = 'localhost';
+$username = 'root';
+$password = '';
+$database = 'books_db';
 
-$dbhost="localhost";
-$dbuser="root";
-$dbpass="";
-$dbname="college";
+// Create connection
+$conn = new mysqli($hostname, $username, $password, $database);
 
-
-$conn = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
-
-if(!$conn){
-     die("smth went wrong");  
+// Check connection
+if ($conn->connect_error) {
+    die('Connection failed: ' . $conn->connect_error);
 }
-else{
-    
-
-}
-
 
 ?>
