@@ -51,7 +51,7 @@ $result = $conn->query($sql); ?>
 
     <div class="container">
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3">
-        <h2 class="page-title mb-3 mb-md-0">📚 Books Library Management</h2>
+        <h2 class="page-title mb-3 mb-md-0">📚 books v1 development branch</h2>
         
         <div class="text-end">
             <div class="fw-bold">
@@ -69,7 +69,7 @@ $result = $conn->query($sql); ?>
 
         <?php if (!empty($_SESSION['user']['role']) && $_SESSION['user']['role'] === 'admin'): ?>
         <div class="mb-3">
-        <a href="modules/books/create.php" class="btn btn-success">Add New Book</a>
+        <a href="modules/books/create.php" class="btn btn-success">Add New </a>
         </div>
         <?php endif; ?>
         <div class="table-responsive">

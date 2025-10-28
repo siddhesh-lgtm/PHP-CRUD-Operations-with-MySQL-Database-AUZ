@@ -5,15 +5,62 @@ require_once __DIR__ . '/../../auth/guard.php'; requireRole('admin');
 
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
+// if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+// 	$title = $_POST['title'];
+// 	$author = $_POST['author'];
+// 	$type = $_POST['type'];
+// 	$description = $_POST['description'];
+
+// 	$sql = "UPDATE books SET title=?, author=?, type=?, description=? WHERE id=?";
+// 	$stmt = $conn->prepare($sql);
+// 	$stmt->bind_param("ssssi", $title, $author, $type, $description, $id);
+
+// 	if ($stmt->execute()) {
+// 		header("Location: ../../index.php");
+// 		exit();
+// 	} else {
+// 		$error = "Error updating book: " . $conn->error;
+// 	}
+// }
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$title = $_POST['title'];
 	$author = $_POST['author'];
 	$type = $_POST['type'];
 	$description = $_POST['description'];
 
-	$sql = "UPDATE books SET title=?, author=?, type=?, description=? WHERE id=?";
+	$coverSql = "";
+	$params = [$title, $author, $type, $description, $id];
+	$types = "ssssi";
+
+	if (!empty($_FILES['cover']['name']) && $_FILES['cover']['error'] === UPLOAD_ERR_OK) {
+		$targetDir = __DIR__ . '/../../assets/uploads/';
+		$fileName = basename($_FILES['cover']['name']);
+		$tmp = $_FILES['cover']['tmp_name'];
+		$size = $_FILES['cover']['size'];
+		$ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+		$allowed = ['jpg','jpeg','png','gif','webp'];
+
+		if (in_array($ext, $allowed) && $size <= 5 * 1024 * 1024) { // allow up to 5MB
+			$newName = uniqid('cover_', true) . '.' . $ext;
+			if (move_uploaded_file($tmp, $targetDir . $newName)) {
+				// delete old cover if exists
+				if (!empty($book['cover'])) {
+					$old = $targetDir . $book['cover'];
+					if (is_file($old)) { @unlink($old); }
+				}
+				$coverSql = ", cover = ?";
+				$params = [$title, $author, $type, $description, $newName, $id];
+				$types = "sssssi";
+			}
+		} else {
+			$error = "Invalid image or file too large (max 5MB).";
+		}
+	}
+
+	$sql = "UPDATE books SET title=?, author=?, type=?, description=?{$coverSql} WHERE id=?";
 	$stmt = $conn->prepare($sql);
-	$stmt->bind_param("ssssi", $title, $author, $type, $description, $id);
+	$stmt->bind_param($types, ...$params);
 
 	if ($stmt->execute()) {
 		header("Location: ../../index.php");
@@ -22,6 +69,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$error = "Error updating book: " . $conn->error;
 	}
 }
+
+
 
 $sql = "SELECT * FROM books WHERE id = ?";
 $stmt = $conn->prepare($sql);
@@ -67,7 +116,7 @@ if (!$book) {
             <div class="alert alert-danger"><?php echo $error; ?></div>
         <?php endif; ?>
         
-        <form method="POST" action="">
+        <form method="POST" action="" enctype="multipart/form-data">
             <div class="mb-3">
                 <label for="title" class="form-label">Title</label>
                 <input type="text" class="form-control" id="title" name="title" value="<?php echo htmlspecialchars($book['title']); ?>" required>

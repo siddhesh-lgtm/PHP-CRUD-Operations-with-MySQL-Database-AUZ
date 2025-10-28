@@ -10,29 +10,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$type = $_POST['type'];
 	$description = $_POST['description'];
 
-	$coverFileName = null;
-	if (!empty($_FILES['cover']['name'])) {
-		$targetDir = __DIR__ . '/../../assets/uploads/';
-		$fileName = basename($_FILES['cover']['name']);
-		$tmp = $_FILES['cover']['tmp_name'];    
-		$size = $_FILES['cover']['size'];
-		$ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-		$allowed = ['jpg','jpeg','png','gif','webp'];
-
-		if (in_array($ext, $allowed) && $size <= 20 * 1024 * 1024) {
-			$newName = uniqid('cover_', true) . '.' . $ext;
-			if (move_uploaded_file($tmp, $targetDir . $newName)) {
-				$coverFileName = $newName;
-			}
-		}
-	}
-
-	$sql = "INSERT INTO books (title, author, type, description, cover) VALUES (?, ?, ?, ?, ?)";
+	$sql = "INSERT INTO books (title, author, type, description) VALUES (?, ?, ?, ?)";
 	$stmt = $conn->prepare($sql);
+
 	if ($stmt === false) {
 		die('Prepare failed: ' . htmlspecialchars($conn->error));
 	}
-	$stmt->bind_param("sssss", $title, $author, $type, $description, $coverFileName);
+
+	$stmt->bind_param("ssss", $title, $author, $type, $description);
 
 	if ($stmt->execute()) {
 		header("Location: ../../index.php?message=Book added successfully");

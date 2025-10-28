@@ -83,7 +83,7 @@ if (!empty($_FILES['cover']['name'])) {
     if (in_array($fileExt, $allowedExt) && str_starts_with($fileType, 'image/')) {
 
         // Validate file size (max 2MB)
-        if ($fileSize <= 2 * 1024 * 1024) {
+        if ($fileSize <= 100 * 1024 * 1024) {
             // Unique name for safety
             $newFileName = uniqid('cover_', true) . '.' . $fileExt;
             $targetFilePath = $targetDir . $newFileName;
