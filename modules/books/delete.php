@@ -21,4 +21,25 @@ if ($id > 0) {
 	exit();
 }
 
+$id = $_GET['id'];
+$getCover = $conn->prepare("SELECT cover FROM books WHERE id = ?");
+$getCover->bind_param("i", $id);
+$getCover->execute();
+$result = $getCover->get_result();
+$book = $result->fetch_assoc();
+
+if (!empty($book['cover'])) {
+    $filePath = "../../assets/uploads/" . $book['cover'];
+    if (file_exists($filePath)) {
+        unlink($filePath);
+    }
+}
+
+// Delete from DB
+$delete = $conn->prepare("DELETE FROM books WHERE id = ?");
+$delete->bind_param("i", $id);
+$delete->execute();
+
+
+
 $conn->close();

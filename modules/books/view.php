@@ -79,17 +79,28 @@ if (!$book) {
             <div class="detail-value"><?php echo nl2br(htmlspecialchars($book['description'])); ?></div>
         </div>
         
-        <div class="mt-4">
+        <?php if (!empty($book['cover'])): ?>
+        <div class="text-center mb-3">
+            <img src="../../assets/uploads/<?php echo htmlspecialchars($book['cover']); ?>" class="img-fluid rounded shadow-sm" style="max-height: 400px;" alt="Book Cover">
+        </div>
+        <?php endif; ?>
+
+
+        <div class="mb-3">
             <!-- <a href="edit.php?id=<?php echo $book['id']; ?>" class="btn btn-warning">Edit</a>
             <a href="delete.php?id=<?php echo $book['id']; ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this book?')">Delete</a> -->
            
            <?php if (!empty($_SESSION['user']['role']) && $_SESSION['user']['role'] === 'admin'): ?>
-            <a href="modules/books/edit.php?id=<?php echo $book['id']; ?>" class="btn btn-warning">Edit</a>
-            <a href="modules/books/delete.php?id=<?php echo $book['id']; ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this book?')">Delete</a>
+            <a href="edit.php?id=<?php echo $book['id']; ?>" class="btn btn-warning">Edit</a>
+            <a href="delete.php?id=<?php echo $book['id']; ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this book?')">Delete</a>
            <?php endif; ?>
             <a href="../../index.php" class="btn btn-secondary">Back to List</a>
         </div>
     </div>
+
+            
+
+
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

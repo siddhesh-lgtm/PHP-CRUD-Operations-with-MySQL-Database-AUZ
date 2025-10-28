@@ -63,7 +63,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <div class="alert alert-danger"><?php echo $error; ?></div>
         <?php endif; ?>
         
-        <form method="POST" action="create.php">
+        <form method="POST" action="create.php" enctype="multipart/form-data">
+
             <div class="mb-3">
                 <label for="title" class="form-label">Title</label>
                 <input type="text" class="form-control" id="title" name="title" required>
@@ -83,6 +84,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <label for="description" class="form-label">Description</label>
                 <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
             </div>
+
+            <div class="mb-3">
+            <label for="cover" class="form-label">Book Cover</label>
+            <input type="file" name="cover" id="cover" class="form-control" accept="image/*">
+            </div>
+
+            
             
             <button type="submit" class="btn btn-success">Add Book</button>
             <a href="../../index.php" class="btn btn-secondary">Cancel</a>

@@ -87,7 +87,18 @@ if (!$book) {
                 <label for="description" class="form-label">Description</label>
                 <textarea class="form-control" id="description" name="description" rows="4" required><?php echo htmlspecialchars($book['description']); ?></textarea>
             </div>
-            
+
+            <div class="mb-3">
+            <label for="cover" class="form-label">Change Cover (optional)</label>
+            <input type="file" name="cover" id="cover" class="form-control" accept="image/*">
+            </div>
+
+            <?php if (!empty($book['cover'])): ?>
+            <p>Current cover:</p>
+            <img src="../../assets/uploads/<?php echo htmlspecialchars($book['cover']); ?>" alt="Book Cover" width="120">
+            <?php endif; ?>
+
+
             <button type="submit" class="btn btn-primary">Update Book</button>
             <a href="../../index.php" class="btn btn-secondary">Cancel</a>
         </form>
